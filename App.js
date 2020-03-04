@@ -1,21 +1,45 @@
 import React, { Component } from 'react';
-import { Image, StyleSheet } from 'react-native';
+import { ScrollView, StyleSheet, View } from 'react-native';
 
 export default class App extends Component {
   render() {
     return (
-      <Image
-        style={styles.image}
-        source={require('./src/programming-1873854_1280.png')}
-      />
+      <ScrollView style={styles.container}>
+        <View style={styles.boxLarge}/>
+        <ScrollView horizontal>
+          <View style={styles.boxSmall}/>
+          <View style={styles.boxSmall}/>
+          <View style={styles.boxSmall}/>
+          <View style={styles.boxSmall}/>
+          <View style={styles.boxSmall}/>
+          <View style={styles.boxSmall}/>
+        </ScrollView>
+        <View style={styles.boxLarge}/>
+        <View style={styles.boxSmall}/>
+        <View style={styles.boxLarge}/>
+
+      </ScrollView>
     );
   }
 }
 
 const styles = StyleSheet.create({
-  image: {
-    width: '100%',
-    height: 400,
-    backgroundColor: '#ddd'
+  container: {
+   flex : 1
   },
+  boxLarge: {
+    width: 300,
+    height: 300,
+    marginBottom: 10,
+    marginRight: 10,
+    backgroundColor: 'steelblue',
+  },
+  boxSmall: {
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+    marginBottom: 10,
+    marginRight: 10,
+    backgroundColor: 'skyblue',
+  }
 });
