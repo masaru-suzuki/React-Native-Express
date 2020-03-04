@@ -1,55 +1,49 @@
-import React from 'react';
-import { SafeAreaView, View, FlatList, StyleSheet, Text } from 'react-native';
-import Constants from 'expo-constants';
+import React, { Component } from 'react'
+import { View } from 'react-native'
 
-const DATA = [
-  {
-    id: 0,
-    title: 'First Item',
-  },
-  {
-    id: 1,
-    title: 'Second Item',
-  },
-  {
-    id: 2,
-    title: 'Third Item',
-  },
-];
+import List from './List'
+import Input from './Input'
+import Title from './Title'
 
-function Item({ title }) {
-  return (
-    <View style={styles.item}>
-      <Text style={styles.title}>{title}</Text>
-    </View>
-  );
+export default class App extends Component {
+
+  state = {
+    todos: ['Click to remove', 'Learn React Native', 'Write Code', 'Ship App'],
+  }
+
+  onAddTodo = (text) => {
+    const {todos} = this.state
+
+    this.setState({
+      todos: [text, ...todos],
+    })
+  }
+
+  onRemoveTodo = (index) => {
+    const {todos} = this.state
+
+    this.setState({
+      todos: todos.filter((todo, i) => i !== index),
+    })
+  }
+
+  render() {
+    const {todos} = this.state
+
+    return (
+      <View>
+        <Title>
+          To-Do List
+        </Title>
+        <Input
+          placeholder={'Type a todo, then hit enter!'}
+          onSubmitEditing={this.onAddTodo}
+        />
+        <List
+          list={todos}
+          onPressItem={this.onRemoveTodo}
+        />
+      </View>
+    )
+  }
 }
-
-export default function App() {
-  return (
-    <SafeAreaView style={styles.container}>
-      <FlatList
-        data={DATA}
-        renderItem={({ item }) => <Item title={item.title} />}
-        keyExtractor={item => item.id}
-        flashScrollIndicators
-      />
-    </SafeAreaView>
-  );
-}
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    marginTop: Constants.statusBarHeight,
-  },
-  item: {
-    backgroundColor: '#f9c2ff',
-    padding: 20,
-    marginVertical: 8,
-    marginHorizontal: 16,
-  },
-  title: {
-    fontSize: 32,
-  },
-});
