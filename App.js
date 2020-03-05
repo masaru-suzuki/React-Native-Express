@@ -1,49 +1,57 @@
-import React, { Component } from 'react'
-import { View } from 'react-native'
+import React, { Component } from 'react';
+import { View, Text, AsyncStorage, StyleSheet } from 'react-native';
 
-import List from './List'
-import Input from './Input'
-import Title from './Title'
+import Input from './Input';
+
+const STORAGE_KEY = 'ASYNC_STORAGE_NAME_EXAMPLE';
 
 export default class App extends Component {
+  state = { name: 'World' };
 
-  state = {
-    todos: ['Click to remove', 'Learn React Native', 'Write Code', 'Ship App'],
+  componentWillMount() {
+    this.load();
   }
 
-  onAddTodo = (text) => {
-    const {todos} = this.state
+  load = async () => {
+    try {
+      const name = await AsyncStorage.getItem(STORAGE_KEY);
 
-    this.setState({
-      todos: [text, ...todos],
-    })
-  }
+      if (name !== null) {
+        this.setState({ name });
+      }
+    } catch (e) {
+      console.error('Failed to load name.');
+    }
+  };
 
-  onRemoveTodo = (index) => {
-    const {todos} = this.state
+  save = async name => {
+    try {
+      await AsyncStorage.setItem(STORAGE_KEY, name);
 
-    this.setState({
-      todos: todos.filter((todo, i) => i !== index),
-    })
-  }
+      this.setState({ name });
+    } catch (e) {
+      console.error('Failed to save name.');
+    }
+  };
 
   render() {
-    const {todos} = this.state
+    const { name } = this.state;
 
     return (
       <View>
-        <Title>
-          To-Do List
-        </Title>
         <Input
-          placeholder={'Type a todo, then hit enter!'}
-          onSubmitEditing={this.onAddTodo}
+          placeholder={'Type your name, hit enter, and refresh!'}
+          onSubmitEditing={this.save}
         />
-        <List
-          list={todos}
-          onPressItem={this.onRemoveTodo}
-        />
+        <Text style={styles.text}>Hello {name}!</Text>
       </View>
-    )
+    );
   }
 }
+
+const styles = StyleSheet.create({
+  text: {
+    padding: 15,
+    backgroundColor: 'skyblue'
+  }
+});
