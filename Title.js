@@ -15,7 +15,7 @@ export default class Title extends Component {
 
 const styles = StyleSheet.create({
   header: {
-    backgroundColor: 'skyblue',
+    backgroundColor: '#ddd',
     padding: 15,
   },
   title: {

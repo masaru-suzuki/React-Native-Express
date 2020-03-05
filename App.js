@@ -1,57 +1,43 @@
 import React, { Component } from 'react';
-import { View, Text, AsyncStorage, StyleSheet } from 'react-native';
+import { View } from 'react-native';
+import { connect } from 'react-redux';
 
+import { actionCreators } from './todoListRedux';
+import List from './List';
 import Input from './Input';
+import Title from './Title';
 
-const STORAGE_KEY = 'ASYNC_STORAGE_NAME_EXAMPLE';
+const mapStateToProps = state => ({
+  todos: state.todos
+});
 
-export default class App extends Component {
-  state = { name: 'World' };
+class App extends Component {
+  onAddTodo = text => {
+    const { dispatch } = this.props;
 
-  componentWillMount() {
-    this.load();
-  }
-
-  load = async () => {
-    try {
-      const name = await AsyncStorage.getItem(STORAGE_KEY);
-
-      if (name !== null) {
-        this.setState({ name });
-      }
-    } catch (e) {
-      console.error('Failed to load name.');
-    }
+    dispatch(actionCreators.add(text));
   };
 
-  save = async name => {
-    try {
-      await AsyncStorage.setItem(STORAGE_KEY, name);
+  onRemoveTodo = index => {
+    const { dispatch } = this.props;
 
-      this.setState({ name });
-    } catch (e) {
-      console.error('Failed to save name.');
-    }
+    dispatch(actionCreators.remove(index));
   };
 
   render() {
-    const { name } = this.state;
+    const { todos } = this.props;
 
     return (
       <View>
+        <Title>To-Do List</Title>
         <Input
-          placeholder={'Type your name, hit enter, and refresh!'}
-          onSubmitEditing={this.save}
+          placeholder={'Type a todo, then hit enter!'}
+          onSubmitEditing={this.onAddTodo}
         />
-        <Text style={styles.text}>Hello {name}!</Text>
+        <List list={todos} onPressItem={this.onRemoveTodo} />
       </View>
     );
   }
 }
 
-const styles = StyleSheet.create({
-  text: {
-    padding: 15,
-    backgroundColor: 'skyblue'
-  }
-});
+export default connect(mapStateToProps)(App);
